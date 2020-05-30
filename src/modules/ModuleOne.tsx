@@ -1,8 +1,10 @@
-import React, { FC, useEffect } from 'react'
+/** @jsx jsx */
+import { FC, useEffect } from 'react'
 import useSWR from 'swr'
 import { Table, Button, Text } from 'components'
 import { Data } from 'types'
 import styled from '@emotion/styled'
+import { jsx, css } from '@emotion/react'
 
 export interface ModuleOneProps {}
 
@@ -11,31 +13,28 @@ const ModuleOne: FC<ModuleOneProps> = ({}) => {
     '/facts/random?animal_type=cat&amount=3',
   )
 
-  console.log(data, error, isValidating)
-
   // manipulate the data how you need
-  useEffect(() => {
-    console.log(data)
-  }, [data, error, isValidating])
+  useEffect(() => {}, [data, error, isValidating])
 
-  const handleClick = (data: Data) => {
-    console.log(data)
+  const handleClick = (row: Data, index: number, data: Data[]) => {
+    console.log(row, index, data)
   }
 
   return (
     <Wrapper>
       <Table
-        title="Module One"
-        exclude={['id', 'deleted', 'used', '__v']}
+        isScrollable
+        include={['_id', 'subscribe', 'source', 'controls']}
         data={data}
         extraData={{
-          subscribe: (data) => {
-            return <Text>subscribe {data.captureData}</Text>
+          subscribe: (row) => {
+            return <Text>subscribe {row.captureData}</Text>
           },
-          controls: (data) => (
-            <Button onClick={() => handleClick(data)}>test</Button>
+          controls: (row, index, data) => (
+            <Button onClick={() => handleClick(row, index, data)}>test</Button>
           ),
         }}
+        css={tableCss}
       />
     </Wrapper>
   )
@@ -43,6 +42,10 @@ const ModuleOne: FC<ModuleOneProps> = ({}) => {
 
 const Wrapper = styled.div`
   margin-bottom: 64px;
+`
+
+const tableCss = css`
+  background: blue;
 `
 
 export default ModuleOne

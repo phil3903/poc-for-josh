@@ -1,32 +1,47 @@
 import React, { FC } from 'react'
 import styled from '@emotion/styled'
 import { Data } from 'types'
-import { isBoolean, isFunction } from 'helpers/typecheck'
+import { isBoolean, isFunction, isNumber, isString } from 'helpers/typecheck'
 // import isDate from 'date-fns/isDate'
 // import format from 'date-fns/format'
 
 export interface TableHeadingProps {
-  cell: (data: Data) => JSX.Element | string | boolean | number
+  value?: (
+    row: Data,
+    data: Data[],
+    rowIndex: number,
+  ) => JSX.Element | string | boolean | number
   row: Data
+  data: Data[]
+  rowIndex: number
   className?: string
 }
 
-const Component: FC<TableHeadingProps> = ({ cell, row, className }) => {
+const TdComponent: FC<TableHeadingProps> = ({
+  value,
+  row,
+  data,
+  rowIndex,
+  className,
+}) => {
   // stringify bools
-  if (isBoolean(cell)) {
-    return <Td className={className}>{String(cell)}</Td>
+  if (isBoolean(value)) {
+    return <Td className={className}>{String(value)}</Td>
   }
 
   // call functions
-  if (isFunction(cell)) {
-    return <Td className={className}>{cell(row)}</Td>
+  if (isFunction(value)) {
+    return <Td className={className}>{value(row, data, rowIndex)}</Td>
   }
 
   // return normal render
-  return <Td className={className}>{cell}</Td>
-}
+  if (isString(value) || isNumber(value)) {
+    return <Td className={className}>{value}</Td>
+  }
 
-export default Component
+  // if not renderable, return an empty TD
+  return <Td className={className}></Td>
+}
 
 const Td = styled.td`
   font-family: ${({ theme }) => theme.font.family};
@@ -36,8 +51,4 @@ const Td = styled.td`
   border: 1px solid gray;
 `
 
-// check for dates
-// const date = new Date(cell)
-// if (isDate(date)) {
-//   return <Component>{cell}</Component>
-// }
+export default TdComponent

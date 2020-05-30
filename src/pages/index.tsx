@@ -1,13 +1,12 @@
 import React from 'react'
 import { NextPage } from 'next'
 import { Page } from 'components'
-import { ModuleOne, ModuleTwo } from 'modules'
+import { ModuleOne } from 'modules'
 
 const IndexPage: NextPage = () => {
   return (
     <Page>
       <ModuleOne />
-      <ModuleTwo />
     </Page>
   )
 }

@@ -2,6 +2,8 @@ import React, { FC } from 'react'
 import { useUniqueKeys } from 'hooks'
 import { Data, ExtraTableData } from 'types'
 import styled from '@emotion/styled'
+import Tbody from './Tbody'
+import Thead from './Thead'
 import Th from './Th'
 import Td from './Td'
 import Tr from './Tr'
@@ -9,37 +11,51 @@ import Tr from './Tr'
 interface TableProps {
   title?: string
   data: Data[]
-  exclude?: string[]
   extraData?: ExtraTableData
+  exclude?: string[]
+  include?: string[]
+  isScrollable?: boolean
   className?: string
 }
 
-const Component: FC<TableProps> = ({ data, exclude, extraData, className }) => {
-  const keys = useUniqueKeys(data, exclude, extraData)
-
+const TableComponent: FC<TableProps> = ({
+  data,
+  extraData,
+  exclude,
+  include,
+  isScrollable,
+  className,
+}) => {
+  const keys = useUniqueKeys({ data, extraData, include, exclude })
   return (
     <Table className={className}>
-      <thead>
-        <tr>
+      <Thead>
+        <Tr>
           {keys.map((key) => (
             <Th key={key} heading={key} />
           ))}
-        </tr>
-      </thead>
-      <tbody>
+        </Tr>
+      </Thead>
+      <Tbody isScrollable={isScrollable}>
         {data &&
-          data.map((data, rowIndex) => {
+          data.map((obj, index) => {
             // spread the extra data to each object
-            const row = { ...data, ...extraData }
+            const row = { ...obj, ...extraData }
             return (
-              <Tr key={rowIndex}>
+              <Tr key={index}>
                 {keys.map((key) => (
-                  <Td key={key} cell={row[key]} row={data} />
+                  <Td
+                    key={key}
+                    value={row[key]}
+                    rowIndex={index}
+                    row={row}
+                    data={data}
+                  />
                 ))}
               </Tr>
             )
           })}
-      </tbody>
+      </Tbody>
     </Table>
   )
 }
@@ -49,4 +65,4 @@ const Table = styled.table`
   border: 1px solid gray;
 `
 
-export default Component
+export default TableComponent
