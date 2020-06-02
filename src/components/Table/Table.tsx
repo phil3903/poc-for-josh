@@ -48,7 +48,7 @@ const TableComponent: FC<TableProps> = ({
                     key={key}
                     value={row[key]}
                     rowIndex={index}
-                    row={row}
+                    row={obj}
                     data={data}
                   />
                 ))}
