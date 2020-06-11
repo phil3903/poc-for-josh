@@ -8,8 +8,8 @@ import { isBoolean, isFunction, isNumber, isString } from 'helpers/typecheck'
 export interface TableHeadingProps {
   value?: (
     row: Data,
-    data: Data[],
     rowIndex: number,
+    data: Data[],
   ) => JSX.Element | string | boolean | number
   row: Data
   data: Data[]
@@ -31,7 +31,7 @@ const TdComponent: FC<TableHeadingProps> = ({
 
   // call functions
   if (isFunction(value)) {
-    return <Td className={className}>{value(row, data, rowIndex)}</Td>
+    return <Td className={className}>{value(row, rowIndex, data)}</Td>
   }
 
   // return normal render
